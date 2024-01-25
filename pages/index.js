@@ -1,8 +1,5 @@
 const Home = () => {
-    return (
-    <div>
-        Test NextJS
-    </div>)
-}
+  return <div>Test NextJS</div>;
+};
 
-export default Home
+export default Home;
