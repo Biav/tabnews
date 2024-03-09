@@ -1,3 +1,5 @@
+import React from "react";
+
 const Home = () => {
   return (
     <div
@@ -8,7 +10,7 @@ const Home = () => {
         padding: "3rem",
       }}
     >
-      <h1>
+      <h1 data-testid="text">
         Constructing a page of news using NextJS, to study a bunch of concepts
         of developing like BD, backend, deploy and test
       </h1>
