@@ -6,6 +6,7 @@ const Home = () => {
       style={{
         display: "flex",
         justifyContent: "center",
+        alignItems: "center",
         flexDirection: "column",
         padding: "3rem",
       }}
