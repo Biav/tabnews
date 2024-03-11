@@ -6,6 +6,6 @@ import "@testing-library/jest-dom";
 describe("initial test", () => {
   test("check if home is rendering", () => {
     render(<Home />);
-    screen.getByTestId("text");
+    expect(screen.getByTestId("text")).toBeInTheDocument();
   });
 });
