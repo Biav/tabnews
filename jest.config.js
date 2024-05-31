@@ -1,4 +1,7 @@
 module.exports = {
-  testEnvironment: "jsdom",
+  testEnvironment: "node",
   setupFilesAfterEnv: ["<rootDir>/src/tests/setupTests.js"],
+  globals: {
+    fetch: global.fetch,
+  },
 };
