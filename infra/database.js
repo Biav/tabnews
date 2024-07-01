@@ -12,8 +12,6 @@ async function query(queryObject) {
     ssl: process.env.NODE_ENV === "development" ? false : true,
   });
 
-  console.log(process.env);
-
   try {
     await client.connect();
     const response = await client.query(queryObject);
