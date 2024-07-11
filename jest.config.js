@@ -1,3 +1,9 @@
+const dotEnv = require("dotenv");
+
+dotEnv.config({
+  path: ".env.development",
+});
+
 const nextJest = require("next/jest");
 
 /** @type {import('jest').Config} */
