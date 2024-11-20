@@ -8,7 +8,7 @@ export default async function migrations(request, response) {
     return response.status(405).json("Method not allowed");
   }
 
-  const dryRun = request.method === "POST" ? true : false;
+  const dryRun = request.method === "POST" ? false : true;
 
   const migrations = await migrationRunner({
     databaseUrl: process.env.DATABASE_URL,
@@ -18,6 +18,10 @@ export default async function migrations(request, response) {
     verbose: "true",
     migrationsTable: "pgmigrations",
   });
+
+  if (request.method === "POST" && migrations.length > 0) {
+    response.status(201).json(migrations);
+  }
 
   response.status(200).json(migrations);
 }
