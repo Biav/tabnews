@@ -1,6 +1,20 @@
 import pg from "pg";
 
 async function query(queryObject) {
+  let client;
+
+  try {
+    client = await getNewClient();
+    const response = await client.query(queryObject);
+    return response;
+  } catch (error) {
+    console.log(error);
+  } finally {
+    client.end();
+  }
+}
+
+async function getNewClient() {
   const { Client } = pg;
 
   const client = new Client({
@@ -12,15 +26,12 @@ async function query(queryObject) {
     ssl: process.env.NODE_ENV === "production" ? true : false,
   });
 
-  try {
-    await client.connect();
-    const response = await client.query(queryObject);
-    return response;
-  } catch (error) {
-    console.log(error);
-  } finally {
-    client.end();
-  }
+  await client.connect();
+
+  return client;
 }
 
-export default query;
+export default {
+  query,
+  getNewClient,
+};

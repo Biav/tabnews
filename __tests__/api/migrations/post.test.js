@@ -1,11 +1,11 @@
-import query from "infra/database";
+import database from "infra/database";
 
 beforeAll(async () => {
   await cleanSchema();
 });
 
 async function cleanSchema() {
-  await query("drop schema public cascade; create schema public;");
+  await database.query("drop schema public cascade; create schema public;");
 }
 
 describe("Should test migrations endpoint", () => {

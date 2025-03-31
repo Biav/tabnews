@@ -1,11 +1,11 @@
-import query from "infra/database";
+import database from "infra/database";
 
 async function status(req, res) {
   const updateAt = new Date();
-  const version = await query("SHOW server_version;");
-  const maxConnections = await query("SHOW max_connections;");
+  const version = await database.query("SHOW server_version;");
+  const maxConnections = await database.query("SHOW max_connections;");
   const databaseName = process.env.POSTGRES_DB;
-  const databaseConnections = await query({
+  const databaseConnections = await database.query({
     text: "SELECT COUNT(*)::int FROM pg_stat_activity WHERE datname=$1;",
     values: [databaseName],
   });
