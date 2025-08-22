@@ -15,7 +15,7 @@ export default async function migrations(request, response) {
   const migrations = await migrationRunner({
     databaseUrl: dbClient,
     dryRun,
-    dir: join("infra", "migrations"),
+    dir: join(process.cwd(), "infra", "migrations"),
     direction: "up",
     verbose: "true",
     migrationsTable: "pgmigrations",
