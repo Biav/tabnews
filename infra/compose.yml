@@ -1,5 +1,6 @@
 services:
   database:
+    container_name: "tabnews_dev"
     image: "postgres:16.2-alpine3.18"
     ports:
       - "5432:5432"
