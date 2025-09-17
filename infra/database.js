@@ -31,7 +31,9 @@ async function getNewClient() {
   return client;
 }
 
-export default {
+const dbConfig = {
   query,
   getNewClient,
 };
+
+export default dbConfig;

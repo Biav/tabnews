@@ -5,6 +5,7 @@ async function awaitForAllServices() {
 
   function awaitToDb() {
     return retry(
+      //eslint-disable-next-line
       async (bail) => {
         const res = await fetch(`${process.env.BASE_URL}/api/status/v1`);
         if (!res.ok) {
