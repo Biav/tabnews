@@ -17,7 +17,7 @@
     "test": "npm run services:up && npm run concurrently:services",
     "posttest": "npm run services:stop",
     "concurrently:services": "concurrently -n next,jest --hide next -k --success command-jest \"next dev\" \"jest --runInBand\"",
-    "test:watch": "jest --watch --runInBand",
+    "test:watch": "jest --watch --runInBand --verbose",
     "prepare": "husky"
   },
   "author": "Bia",
