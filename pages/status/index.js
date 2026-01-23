@@ -1,22 +1,40 @@
-import { useEffect } from "react";
-import styles from "./style.module.scss";
+"use client";
 
-// const getStatus = async () => {
-//   const res = await fetch(`${process.env.BASE_URL}/api/status/v1`);
-//   console.log("Fetch Response:", res.json());
-//   return res;
-// };
+import styles from "./style.module.scss";
+import useSWR from "swr";
 
 const StatusPage = () => {
-  useEffect(() => {
-    fetch(`/api/status/v1`)
-      .then((res) => res.json())
-      .then((statusResponse) => {
-        console.log("Status Response:", statusResponse);
-      }, []);
-  }, []);
+  const { data: status, isLoading } = useSWR("/api/status/v1");
 
-  return <div className={styles.statusPageContainer}>Status Page</div>;
+  return (
+    <div>
+      <div className={styles.statusPageContainer}>Status Page</div>
+      {isLoading ? (
+        <div className={styles.loading}>Loading...</div>
+      ) : (
+        <div className={styles.statusGrid}>
+          <div className={styles.statusItem}>
+            <div className={styles.label}>Max Connections:</div>
+            <div className={styles.value}>{status?.maxConnections}</div>
+          </div>
+          <div className={styles.statusItem}>
+            <div className={styles.label}>Open Connections:</div>
+            <div className={styles.value}>{status?.openedConnections}</div>
+          </div>
+          <div className={styles.statusItem}>
+            <div className={styles.label}>Update:</div>
+            <div className={styles.value}>
+              {new Date(status?.update_at).toDateString()}
+            </div>
+          </div>
+          <div className={styles.statusItem}>
+            <div className={styles.label}>Version:</div>
+            <div className={styles.value}>{status?.version}</div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
 };
 
 export default StatusPage;

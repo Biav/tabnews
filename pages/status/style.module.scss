@@ -1,10 +1,39 @@
 body {
   background-color: #1b1f23;
   color: #ffffff;
+  font-size: 1.5rem;
 }
+
 .statusPageContainer {
   text-align: center;
   margin-top: 2rem;
   font-size: 2rem;
   font-weight: bold;
+}
+
+.statusGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  margin: 2rem;
+  justify-self: center;
+}
+
+.statusItem {
+  display: contents;
+}
+
+.label {
+  font-weight: bold;
+  color: #f39c12;
+}
+
+.value {
+  color: #ffffff;
+}
+
+.loading {
+  text-align: center;
+  margin-top: 2rem;
+  color: #f39c12;
 }
