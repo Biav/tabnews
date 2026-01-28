@@ -15,6 +15,10 @@ const createJestConfig = nextJest({
 // Add any custom config to be passed to Jest
 const config = {
   moduleDirectories: ["node_modules", "<rootDir>"],
+  moduleNameMapper: {
+    "^infra/(.*)$": "<rootDir>/infra/$1",
+    "^@/(.*)$": "<rootDir>/src/$1",
+  },
 };
 
 // createJestConfig is exported this way to ensure that next/jest can load the Next.js config which is async
