@@ -1,6 +1,5 @@
 import { InternalServerError } from "infra/errors";
 import type { NextApiRequest, NextApiResponse } from "next";
-import type { NextHandler } from "next-connect";
 
 function onErrorHandler(err: Error, req: NextApiRequest, res: NextApiResponse) {
   const cause = err;
