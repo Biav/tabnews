@@ -1,8 +1,14 @@
 import { runner as migrationRunner } from "node-pg-migrate";
 import { join } from "node:path";
 import database from "infra/database";
+import { createRouter } from "next-connect";
+import { controller } from "infra/controller";
 
-export default async function migrations(request, response) {
+const router = createRouter();
+router.get(migrations);
+router.post(migrations);
+
+async function migrations(request, response) {
   const methodsAlloweds = ["GET", "POST"];
 
   if (!methodsAlloweds.includes(request.method)) {
@@ -29,3 +35,5 @@ export default async function migrations(request, response) {
 
   response.status(200).json(migrations);
 }
+
+export default router.handler(controller);
