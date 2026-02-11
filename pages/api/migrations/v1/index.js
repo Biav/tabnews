@@ -1,8 +1,6 @@
-import { runner as migrationRunner } from "node-pg-migrate";
-import { join } from "node:path";
-import database from "infra/database";
 import { createRouter } from "next-connect";
 import { controller } from "infra/controller";
+import runMigrations from "models/migrations";
 
 const router = createRouter();
 router.get(migrations);
@@ -16,22 +14,11 @@ async function migrations(request, response) {
   }
 
   const dryRun = request.method === "POST" ? false : true;
-  const dbClient = await database.getNewClient();
-
-  const migrations = await migrationRunner({
-    databaseUrl: dbClient,
-    dryRun,
-    dir: join(process.cwd(), "infra", "migrations"),
-    direction: "up",
-    verbose: "true",
-    migrationsTable: "pgmigrations",
-  });
+  const migrations = await runMigrations(dryRun);
 
   if (request.method === "POST" && migrations.length > 0) {
     response.status(201).json(migrations);
   }
-
-  await dbClient.end();
 
   response.status(200).json(migrations);
 }
