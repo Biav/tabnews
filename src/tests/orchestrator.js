@@ -1,4 +1,6 @@
 import retry from "async-retry";
+import runMigrations from "models/migrations";
+import database from "infra/database";
 
 async function awaitForAllServices() {
   await awaitToDb();
@@ -21,4 +23,17 @@ async function awaitForAllServices() {
   }
 }
 
-export { awaitForAllServices };
+async function clearDatabase() {
+  await database.query("drop schema public cascade; create schema public;");
+}
+
+async function runPedingMigrations() {
+  console.log("Running pending migrations...");
+  await runMigrations();
+}
+
+export default orchestrator = {
+  awaitForAllServices,
+  clearDatabase,
+  runPedingMigrations,
+};

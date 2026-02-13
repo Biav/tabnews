@@ -19,6 +19,16 @@ const config = {
     "^infra/(.*)$": "<rootDir>/infra/$1",
     "^@/(.*)$": "<rootDir>/src/$1",
   },
+  transform: {
+    "^.+\\.(js|jsx|ts|tsx|mjs)$": [
+      "babel-jest",
+      {
+        presets: [["next/babel"]],
+      },
+    ],
+  },
+  // ✅ Transforme node-pg-migrate e glob
+  transformIgnorePatterns: ["node_modules/(?!(node-pg-migrate|glob)/)"],
 };
 
 // createJestConfig is exported this way to ensure that next/jest can load the Next.js config which is async

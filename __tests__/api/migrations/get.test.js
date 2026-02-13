@@ -1,8 +1,8 @@
 import database from "infra/database";
-import { awaitForAllServices } from "src/tests/orchestrator";
+import orchestrator from "src/tests/orchestrator";
 
 beforeAll(async () => {
-  await awaitForAllServices();
+  await orchestrator.awaitForAllServices();
   await cleanSchema();
 }, 60000);
 
