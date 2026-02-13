@@ -28,12 +28,13 @@ async function clearDatabase() {
 }
 
 async function runPedingMigrations() {
-  console.log("Running pending migrations...");
   await runMigrations();
 }
 
-export default orchestrator = {
+const orchestrator = {
   awaitForAllServices,
   clearDatabase,
   runPedingMigrations,
 };
+
+export default orchestrator;

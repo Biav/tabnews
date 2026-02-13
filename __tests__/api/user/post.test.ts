@@ -1,4 +1,3 @@
-import user from "pages/api/v1/user";
 import orchestrator from "src/tests/orchestrator";
 
 beforeAll(async () => {
