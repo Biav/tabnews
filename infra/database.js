@@ -8,7 +8,6 @@ async function query(queryObject) {
     const response = await client.query(queryObject);
     return response;
   } catch (error) {
-    console.log(error);
     throw error;
   } finally {
     client?.end();
