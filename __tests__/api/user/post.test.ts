@@ -1,3 +1,4 @@
+import UserBuilder from "@/tests/builders/users/user.builder";
 import orchestrator from "src/tests/orchestrator";
 
 beforeAll(async () => {
@@ -10,11 +11,9 @@ describe("POST /api/user", () => {
   describe("Anonymous user", () => {
     it("should create a new user", async () => {
       const baseUrl = process.env.API_URL || "http://localhost:3000";
-      const userMock = {
-        user_name: "Felipe",
-        email: "felipedeschamps@gmail",
-        password: "12345678",
-      };
+
+      const userMock = new UserBuilder().build();
+
       const response = await fetch(`${baseUrl}/api/v1/user`, {
         method: "POST",
         headers: {
@@ -35,11 +34,9 @@ describe("POST /api/user", () => {
 
     it("should not create a new user with an existing email", async () => {
       const baseUrl = process.env.API_URL || "http://localhost:3000";
-      const userMock = {
-        user_name: "Felipe1",
-        email: "felipedeschamps@gmail.com",
-        password: "12345678",
-      };
+
+      const userMock = new UserBuilder().build();
+
       const response1 = await fetch(`${baseUrl}/api/v1/user`, {
         method: "POST",
         headers: {
@@ -57,8 +54,36 @@ describe("POST /api/user", () => {
         },
         body: JSON.stringify({
           ...userMock,
-          user_name: "Felipe1",
-          email: "felipedeschamps@gmail.com",
+          user_name: "NewUser1",
+        }),
+      });
+
+      expect(response2.status).toBe(409);
+    });
+
+    it("should not create a new user with an existing username", async () => {
+      const baseUrl = process.env.API_URL || "http://localhost:3000";
+
+      const userMock = new UserBuilder().build();
+
+      const response1 = await fetch(`${baseUrl}/api/v1/user`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(userMock),
+      });
+
+      expect(response1.status).toBe(201);
+
+      const response2 = await fetch(`${baseUrl}/api/v1/user`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          ...userMock,
+          email: "NewUser1@gmail.com",
         }),
       });
 
