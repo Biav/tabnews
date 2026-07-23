@@ -15,6 +15,16 @@ async function createUser(userData: UserType) {
   return user.rows[0];
 }
 
+async function getUserByUserName(userName: string) {
+  const user = await database.query({
+    text: "SELECT * FROM users WHERE user_name = $1",
+    values: [userName],
+  });
+
+  return user.rows[0];
+}
+
 export const userService = {
   createUser,
+  getUserByUserName,
 };

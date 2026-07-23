@@ -1,6 +1,7 @@
 import retry from "async-retry";
 import runMigrations from "models/migrations";
 import database from "infra/database";
+import { userService } from "models/user";
 
 async function awaitForAllServices() {
   await awaitToDb();
@@ -31,10 +32,15 @@ async function runPedingMigrations() {
   await runMigrations();
 }
 
+async function createUser(userData) {
+  return await userService.createUser(userData);
+}
+
 const orchestrator = {
   awaitForAllServices,
   clearDatabase,
   runPedingMigrations,
+  createUser,
 };
 
 export default orchestrator;
