@@ -1,5 +1,11 @@
 import UserBuilder from "@/tests/builders/users/user.builder";
 import orchestrator from "src/tests/orchestrator";
+import {
+  emailValidationError,
+  passwordValidationError,
+  usernameValidationError,
+  missingFieldsError,
+} from "infra/errors";
 
 beforeAll(async () => {
   await orchestrator.awaitForAllServices();
@@ -89,5 +95,93 @@ describe("POST /api/user", () => {
 
       expect(response2.status).toBe(409);
     });
+  });
+
+  it("should not create a new user with missing fields", async () => {
+    const baseUrl = process.env.API_URL || "http://localhost:3000";
+
+    const userMock = new UserBuilder().build();
+
+    const response = await fetch(`${baseUrl}/api/v1/user`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        ...userMock,
+        email: "",
+      }),
+    });
+
+    const responseBody = await response.json();
+
+    expect(response.status).toBe(422);
+    expect(responseBody.message).toBe(missingFieldsError("email"));
+  });
+
+  it("should not create a new user with a username shorter than 4 characters", async () => {
+    const baseUrl = process.env.API_URL || "http://localhost:3000";
+
+    const userMock = new UserBuilder().build();
+
+    const response = await fetch(`${baseUrl}/api/v1/user`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        ...userMock,
+        user_name: "abc",
+      }),
+    });
+
+    const responseBody = await response.json();
+
+    expect(response.status).toBe(422);
+    expect(responseBody.message).toBe(usernameValidationError(4));
+  });
+
+  it("should not create a new user with a password shorter than 10 characters", async () => {
+    const baseUrl = process.env.API_URL || "http://localhost:3000";
+
+    const userMock = new UserBuilder().build();
+
+    const response = await fetch(`${baseUrl}/api/v1/user`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        ...userMock,
+        password: "short",
+      }),
+    });
+
+    const responseBody = await response.json();
+
+    expect(response.status).toBe(422);
+    expect(responseBody.message).toBe(passwordValidationError(10));
+  });
+
+  it("should not create a new user with an invalid email format", async () => {
+    const baseUrl = process.env.API_URL || "http://localhost:3000";
+
+    const userMock = new UserBuilder().build();
+
+    const response = await fetch(`${baseUrl}/api/v1/user`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        ...userMock,
+        email: "invalid-email-format",
+      }),
+    });
+
+    const responseBody = await response.json();
+
+    expect(response.status).toBe(422);
+    expect(responseBody.message).toBe(emailValidationError());
   });
 });

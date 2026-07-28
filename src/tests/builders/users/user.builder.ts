@@ -10,7 +10,7 @@ class UserBuilder {
   constructor() {
     this.user_name = chance.name();
     this.email = chance.email();
-    this.password = chance.guid();
+    this.password = chance.string({ length: 10 });
   }
 
   withUserName(user_name: string) {
