@@ -2,6 +2,7 @@ import {
   InternalServerError,
   MethodNotAllowed,
   UniqueConstraintError,
+  UnauthorizedError,
 } from "infra/errors";
 import type { NextApiRequest, NextApiResponse } from "next";
 
@@ -24,6 +25,10 @@ function onErrorHandler(
   if ((err as any)?.code === "23505") {
     const uniqueError = new UniqueConstraintError(err);
     return res.status(uniqueError.statusCode).json(uniqueError);
+  }
+
+  if (err instanceof UnauthorizedError) {
+    return res.status(err.statusCode).json(err);
   }
 
   const responseError = new InternalServerError({ cause });

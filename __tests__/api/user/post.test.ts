@@ -1,5 +1,6 @@
 import UserBuilder from "@/tests/builders/users/user.builder";
 import orchestrator from "src/tests/orchestrator";
+import bcrypt from "bcryptjs";
 import {
   emailValidationError,
   passwordValidationError,
@@ -36,6 +37,10 @@ describe("POST /api/user", () => {
         user_name: userMock.user_name,
         email: userMock.email,
       });
+
+      expect(
+        await bcrypt.compare(userMock.password, createdUser.message.password),
+      ).toBe(true);
     });
 
     it("should not create a new user with an existing email", async () => {

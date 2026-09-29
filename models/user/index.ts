@@ -6,7 +6,7 @@ import {
   emailValidationError,
   missingFieldsError,
 } from "infra/errors";
-import { hashPassword } from "models/password";
+import { passwordService } from "models/password";
 
 type UserData = {
   user_name: string;
@@ -40,7 +40,7 @@ async function createUser(userData: UserType) {
     return validation;
   }
 
-  const hashedPassword = hashPassword(userData.password);
+  const hashedPassword = passwordService.hashPassword(userData.password);
 
   const user = await database.query({
     text: "INSERT INTO users (user_name, email, password) VALUES ($1, $2, $3) RETURNING *",
