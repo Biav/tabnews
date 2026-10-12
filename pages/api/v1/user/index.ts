@@ -7,8 +7,8 @@ import { createRouter } from "next-connect";
 
 const router = createRouter<NextApiRequest, NextApiResponse>();
 
-router.post(user);
-router.get(user);
+router.post(createUser);
+router.get(getAuthenticatedUser);
 
 async function getAuthenticatedUser(req: NextApiRequest, res: NextApiResponse) {
   try {
@@ -33,17 +33,7 @@ async function getAuthenticatedUser(req: NextApiRequest, res: NextApiResponse) {
   }
 }
 
-async function user(req: NextApiRequest, res: NextApiResponse) {
-  const methodsAlloweds = ["GET", "POST"];
-
-  if (!methodsAlloweds.includes(req.method || "")) {
-    return res.status(405).json("Method not allowed");
-  }
-
-  if (req.method === "GET") {
-    return getAuthenticatedUser(req, res);
-  }
-
+async function createUser(req: NextApiRequest, res: NextApiResponse) {
   const response = await userService.createUser(req.body);
 
   if (response instanceof ValidationError) {

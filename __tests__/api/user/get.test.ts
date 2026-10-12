@@ -8,8 +8,8 @@ beforeAll(async () => {
 });
 
 describe("GET /api/user", () => {
-  describe("valid sessions", () => {
-    it("should renew session", async () => {
+  describe("default user", () => {
+    it("should renew session when session is valid", async () => {
       const baseUrl = process.env.API_URL || "http://localhost:3000";
       const userMock = new UserBuilder().build();
       const userCreated = await orchestrator.createUser(userMock);
@@ -55,6 +55,50 @@ describe("GET /api/user", () => {
       expect(setCookies[0]).toContain(`Expires=${expiresAt}`);
       expect(setCookies[0]).toContain("Path=/");
       expect(setCookies[0]).toContain("HttpOnly");
+    });
+
+    it("should not renew session when session is expired", async () => {
+      jest.useFakeTimers({
+        now: new Date(Date.now() - 1000 * 60 * 60 * 24 * 30), // 30 days ago
+      });
+
+      const baseUrl = process.env.API_URL || "http://localhost:3000";
+      const userMock = new UserBuilder().build();
+      const userCreated = await orchestrator.createUser(userMock);
+      const session = await orchestrator.createSession(userCreated.id);
+
+      const validSession = await fetch(`${baseUrl}/api/v1/user`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Cookie: `sid=${session.token}`,
+        },
+      });
+
+      const validSessionJson = await validSession.json();
+
+      expect(validSession.status).toBe(401);
+      expect(validSessionJson.message).toBe("Invalid or expired session");
+    });
+
+    it("should not renew session when token is invalid", async () => {
+      const baseUrl = process.env.API_URL || "http://localhost:3000";
+      const userMock = new UserBuilder().build();
+      const userCreated = await orchestrator.createUser(userMock);
+      await orchestrator.createSession(userCreated.id);
+
+      const validSession = await fetch(`${baseUrl}/api/v1/user`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Cookie: `sid=invalid_token`,
+        },
+      });
+
+      const validSessionJson = await validSession.json();
+
+      expect(validSession.status).toBe(401);
+      expect(validSessionJson.message).toBe("Invalid or expired session");
     });
   });
 });
