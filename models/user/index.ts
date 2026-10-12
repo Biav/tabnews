@@ -59,6 +59,15 @@ async function getUserByUserName(userName: string) {
   return user.rows[0];
 }
 
+async function getUserById(userId: string) {
+  const user = await database.query({
+    text: "SELECT user_name, email FROM users WHERE id = $1",
+    values: [userId],
+  });
+
+  return user.rows[0];
+}
+
 function validateUser(userData: UserData): ValidationResponse {
   const { user_name, email, password } = userData;
   let validation: ValidationResponse = {
@@ -145,4 +154,5 @@ const validateEmail = (email: string): ValidationResponse | void => {
 export const userService = {
   createUser,
   getUserByUserName,
+  getUserById,
 };

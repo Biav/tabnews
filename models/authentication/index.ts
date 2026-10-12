@@ -18,7 +18,6 @@ const getAuthenticatedUser = async (user_name: string, password: string) => {
     throw new UnauthorizedError({ cause: new Error("Invalid password") });
   }
 
-  console.log(user);
   return user;
 };
 

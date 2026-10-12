@@ -3,7 +3,6 @@ import { NextApiRequest, NextApiResponse } from "next";
 import { createRouter } from "next-connect";
 import { getAuthenticatedUser } from "models/authentication";
 import { sessionService } from "models/session";
-import { stringifySetCookie } from "cookie";
 
 const router = createRouter<NextApiRequest, NextApiResponse>();
 
@@ -20,17 +19,7 @@ async function session(req: NextApiRequest, res: NextApiResponse) {
   const session = await sessionService.create(authenticatedUser.id);
 
   try {
-    const cookie = stringifySetCookie({
-      name: "sid",
-      value: session.token,
-      path: "/",
-      httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: "lax",
-      expires: session.expires_at,
-    });
-
-    res.setHeader("Set-Cookie", cookie);
+    controller.setSessionCookie(session, res);
   } catch (error) {
     console.error("Error setting cookie:", error);
     return res.status(500).json({ message: "Internal server error" });
