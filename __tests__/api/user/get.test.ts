@@ -24,6 +24,11 @@ describe("GET /api/user", () => {
       });
 
       const validSessionJson = await validSession.json();
+      const cacheControlHeader = validSession.headers.get("Cache-Control");
+
+      expect(cacheControlHeader).toBe(
+        "no-store, no-cache, must-revalidate, max-age=0",
+      );
 
       expect(validSession.status).toBe(200);
       expect(validSessionJson.session).toMatchObject({

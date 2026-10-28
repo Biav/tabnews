@@ -41,8 +41,18 @@ async function renew(userId: string) {
   return updatedSession.rows[0];
 }
 
+async function deleteSession(sessionId: string) {
+  const deletedSession = await database.query({
+    text: "UPDATE sessions SET expires_at = expires_at - interval '1 year', updated_at = NOW() WHERE id = $1 RETURNING *",
+    values: [sessionId],
+  });
+
+  return deletedSession.rows[0];
+}
+
 export const sessionService = {
   create,
   validateSession,
   renew,
+  deleteSession,
 };

@@ -51,8 +51,22 @@ function setSessionCookie(session: any, res: NextApiResponse) {
   res.setHeader("Set-Cookie", cookie);
 }
 
+function clearSessionCookie(res: NextApiResponse) {
+  const cookie = stringifySetCookie({
+    name: "sid",
+    value: "",
+    path: "/",
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "lax",
+  });
+
+  res.setHeader("Set-Cookie", cookie);
+}
+
 export const controller = {
   onError: onErrorHandler,
   onNoMatch: onNoMatchHandler,
   setSessionCookie,
+  clearSessionCookie,
 };

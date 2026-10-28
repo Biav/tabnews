@@ -7,6 +7,7 @@ import { sessionService } from "models/session";
 const router = createRouter<NextApiRequest, NextApiResponse>();
 
 router.post(session);
+router.delete(deleteSession);
 
 async function session(req: NextApiRequest, res: NextApiResponse) {
   const { user_name, password } = req.body;
@@ -26,6 +27,26 @@ async function session(req: NextApiRequest, res: NextApiResponse) {
   }
 
   return res.status(201).json(session);
+}
+
+async function deleteSession(req: NextApiRequest, res: NextApiResponse) {
+  const sessionToken = req.cookies.sid || "";
+
+  try {
+    const validSession = await sessionService.validateSession(sessionToken);
+    console.log("Valid session:", validSession);
+
+    if (!validSession.id) {
+      return res.status(401).json({ message: "Invalid or expired session" });
+    }
+    const deletedSession = await sessionService.deleteSession(validSession.id);
+
+    controller.clearSessionCookie(res);
+    return res.status(200).json(deletedSession);
+  } catch (error) {
+    console.error("Error deleting session:", error);
+    return res.status(401).json({ message: "Invalid or expired session" });
+  }
 }
 
 export default router.handler(controller as any);

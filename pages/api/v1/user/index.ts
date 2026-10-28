@@ -22,6 +22,11 @@ async function getAuthenticatedUser(req: NextApiRequest, res: NextApiResponse) {
       );
       controller.setSessionCookie(renewedSession, res);
 
+      res.setHeader(
+        "Cache-Control",
+        "no-store, no-cache, must-revalidate, max-age=0",
+      );
+
       return res.status(200).json({
         user: authenticatedUser,
         session: renewedSession,
