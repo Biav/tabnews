@@ -4,8 +4,11 @@ import database from "infra/database";
 import { userService } from "models/user";
 import { sessionService } from "models/session";
 
+const urlEmail = `http://${process.env.EMAIL_HTTP_HOST}:${process.env.EMAIL_HTTP_PORT}`;
+
 async function awaitForAllServices() {
   await awaitToDb();
+  await awaitToEmail();
 
   function awaitToDb() {
     return retry(
@@ -14,6 +17,23 @@ async function awaitForAllServices() {
         const res = await fetch(`${process.env.BASE_URL}/api/status/v1`);
         if (!res.ok) {
           throw new Error("Service not ready");
+        }
+        return res;
+      },
+      {
+        retries: 10,
+        maxTimeout: 1000,
+      },
+    );
+  }
+
+  function awaitToEmail() {
+    return retry(
+      //eslint-disable-next-line
+      async (bail) => {
+        const res = await fetch(`${urlEmail}/messages`);
+        if (!res.ok) {
+          throw new Error("Email service not ready");
         }
         return res;
       },
@@ -42,12 +62,19 @@ async function createSession(userId) {
   return session;
 }
 
+async function getLastEmail() {
+  const res = await fetch(`${urlEmail}/messages`);
+  const data = await res.json();
+  return data[data.length - 1];
+}
+
 const orchestrator = {
   awaitForAllServices,
   clearDatabase,
   runPedingMigrations,
   createUser,
   createSession,
+  getLastEmail,
 };
 
 export default orchestrator;
